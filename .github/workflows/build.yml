@@ -79,3 +79,8 @@ jobs:
           sleep 5
           ps -ef | grep dotnet
           cat app.log
+      - name: Download UI Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-ui
+          path: /Users/hemanthpeddi/Downloads/deployments/ui
