@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "/VO+e3a3Jx4=",
+  "dgSpecHash": "A3kFHj0OyCQ=",
   "success": true,
   "projectFilePath": "/Users/hemanthpeddi/Desktop/hello-world-app/backend/HelloApi/HelloApi.csproj",
   "expectedPackageFiles": [
-    "/Users/hemanthpeddi/.nuget/packages/microsoft.aspnetcore.openapi/10.0.1/microsoft.aspnetcore.openapi.10.0.1.nupkg.sha512",
-    "/Users/hemanthpeddi/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+    "/Users/hemanthpeddi/.nuget/packages/microsoft.aspnetcore.openapi/9.0.6/microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",
+    "/Users/hemanthpeddi/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
+    "/Users/hemanthpeddi/.nuget/packages/microsoft.netcore.app.ref/9.0.11/microsoft.netcore.app.ref.9.0.11.nupkg.sha512",
+    "/Users/hemanthpeddi/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.11/microsoft.aspnetcore.app.ref.9.0.11.nupkg.sha512",
+    "/Users/hemanthpeddi/.nuget/packages/microsoft.netcore.app.host.osx-arm64/9.0.11/microsoft.netcore.app.host.osx-arm64.9.0.11.nupkg.sha512"
   ],
   "logs": []
 }
