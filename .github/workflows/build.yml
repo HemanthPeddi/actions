@@ -58,3 +58,24 @@ jobs:
         with:
           name: hello-ui
           path: frontend/hello-ui/dist
+  
+  deploy:
+  needs: build
+
+  runs-on: self-hosted
+
+  steps:
+
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: hello-api
+        path: /Users/hemanthpeddi/Downloads/deployments/helloapi
+
+    - name: Stop Existing App
+      run: pkill dotnet || true
+
+    - name: Start App
+      run: |
+        cd /Users/hemanthpeddi/Downloads/deployments/helloapi
+        nohup dotnet HelloApi.dll > app.log 2>&1 &
