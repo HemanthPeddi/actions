@@ -1,0 +1,40 @@
+name: Build Hello World App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore API
+        run: dotnet restore backend/HelloApi
+
+      - name: Build API
+        run: dotnet build backend/HelloApi --no-restore
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Angular Packages
+        run: |
+          cd frontend/hello-ui
+          npm install
+
+      - name: Build Angular
+        run: |
+          cd frontend/hello-ui
+          npm run build
