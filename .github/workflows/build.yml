@@ -6,16 +6,13 @@ on:
       - main
 
 jobs:
+
   build:
     runs-on: self-hosted
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      # =====================
-      # Build .NET API
-      # =====================
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -33,10 +30,6 @@ jobs:
         with:
           name: hello-api
           path: publish
-
-      # =====================
-      # Build Angular UI
-      # =====================
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -58,24 +51,23 @@ jobs:
         with:
           name: hello-ui
           path: frontend/hello-ui/dist
-  
+
   deploy:
-  needs: build
+    needs: build
 
-  runs-on: self-hosted
+    runs-on: self-hosted
 
-  steps:
+    steps:
+      - name: Download API Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-api
+          path: /Users/hemanthpeddi/Downloads/deployments/helloapi
 
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: hello-api
-        path: /Users/hemanthpeddi/Downloads/deployments/helloapi
+      - name: Stop Existing App
+        run: pkill dotnet || true
 
-    - name: Stop Existing App
-      run: pkill dotnet || true
-
-    - name: Start App
-      run: |
-        cd /Users/hemanthpeddi/Downloads/deployments/helloapi
-        nohup dotnet HelloApi.dll > app.log 2>&1 &
+      - name: Start App
+        run: |
+          cd /Users/hemanthpeddi/Downloads/deployments/helloapi
+          nohup dotnet HelloApi.dll > app.log 2>&1 &
