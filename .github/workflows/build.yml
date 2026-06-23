@@ -71,3 +71,10 @@ jobs:
         run: |
           cd /Users/hemanthpeddi/Downloads/deployments/helloapi
           nohup dotnet HelloApi.dll > app.log 2>&1 &
+      - name: Start App
+        run: |
+          cd /Users/hemanthpeddi/Downloads/deployments/helloapi
+          pkill dotnet || true
+          nohup dotnet HelloApi.dll --urls=http://localhost:5000 > app.log 2>&1 &
+          sleep 5
+          cat app.log
