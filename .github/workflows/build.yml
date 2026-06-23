@@ -77,4 +77,5 @@ jobs:
           pkill dotnet || true
           nohup dotnet HelloApi.dll --urls=http://localhost:5000 > app.log 2>&1 &
           sleep 5
+          ps -ef | grep dotnet
           cat app.log
