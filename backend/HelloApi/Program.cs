@@ -4,7 +4,7 @@ var app = builder.Build();
 
 app.MapGet("/hello", () =>
 {
-    return "Hello from .NET API";
+    return "Hello from .NET API. We have to learn .NET";
 });
 
 app.Run();
