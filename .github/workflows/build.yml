@@ -13,6 +13,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # =====================
+      # Build .NET API
+      # =====================
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -21,15 +25,25 @@ jobs:
       - name: Restore API
         run: dotnet restore backend/HelloApi
 
-      - name: Build API
-        run: dotnet build backend/HelloApi --no-restore
+      - name: Publish API
+        run: dotnet publish backend/HelloApi -c Release -o publish
+
+      - name: Upload API Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-api
+          path: publish
+
+      # =====================
+      # Build Angular UI
+      # =====================
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Angular Packages
+      - name: Install UI Packages
         run: |
           cd frontend/hello-ui
           npm install
@@ -38,3 +52,9 @@ jobs:
         run: |
           cd frontend/hello-ui
           npm run build
+
+      - name: Upload UI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-ui
+          path: frontend/hello-ui/dist
