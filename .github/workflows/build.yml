@@ -1,4 +1,4 @@
-name: Build Hello World App
+name: Build and Push Docker Image
 
 on:
   push:
@@ -8,79 +8,26 @@ on:
 jobs:
 
   build:
-    runs-on: self-hosted
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      - name: Restore API
-        run: dotnet restore backend/HelloApi
-
-      - name: Publish API
-        run: dotnet publish backend/HelloApi -c Release -o publish
-
-      - name: Upload API Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hello-api
-          path: publish
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install UI Packages
+      - name: Login to GHCR
         run: |
-          cd frontend/hello-ui
-          npm install
+          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Angular
+      - name: Build Docker Image
         run: |
-          cd frontend/hello-ui
-          npm run build
+          docker build -t ghcr.io/hemanthpeddi/helloapi:v1 ./backend/HelloApi
 
-      - name: Upload UI Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hello-ui
-          path: frontend/hello-ui/dist
-
-  deploy:
-    needs: build
-
-    runs-on: self-hosted
-
-    steps:
-      - name: Download API Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: hello-api
-          path: /Users/hemanthpeddi/Downloads/deployments/helloapi
-
-      - name: Stop Existing App
-        run: pkill dotnet || true
-
-      - name: Start App
+      - name: Push Docker Image
         run: |
-          cd /Users/hemanthpeddi/Downloads/deployments/helloapi
-          nohup dotnet HelloApi.dll > app.log 2>&1 &
-      - name: Start App
-        run: |
-          cd /Users/hemanthpeddi/Downloads/deployments/helloapi
-          pkill dotnet || true
-          nohup dotnet HelloApi.dll --urls=http://localhost:5000 > app.log 2>&1 &
-          sleep 5
-          ps -ef | grep dotnet
-          cat app.log
-      - name: Download UI Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: hello-ui
-          path: /Users/hemanthpeddi/Downloads/deployments/ui
+          docker push ghcr.io/hemanthpeddi/helloapi:v1
