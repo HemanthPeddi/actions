@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Deploy Application
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -16,7 +15,6 @@ jobs:
       packages: write
 
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -24,22 +22,36 @@ jobs:
         run: |
           echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Docker Image
+      # ============================
+      # Build & Push API
+      # ============================
+
+      - name: Build API Image
         run: |
           docker build -t ghcr.io/hemanthpeddi/helloapi:v1 ./backend/HelloApi
 
-      - name: Push Docker Image
+      - name: Push API Image
         run: |
           docker push ghcr.io/hemanthpeddi/helloapi:v1
 
-  deploy:
+      # ============================
+      # Build & Push Angular UI
+      # ============================
 
+      - name: Build UI Image
+        run: |
+          docker build -t ghcr.io/hemanthpeddi/helloui:v1 ./frontend/hello-ui
+
+      - name: Push UI Image
+        run: |
+          docker push ghcr.io/hemanthpeddi/helloui:v1
+
+  deploy:
     needs: build
 
     runs-on: self-hosted
 
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -47,21 +59,10 @@ jobs:
         run: |
           echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Pull Latest Image
+      - name: Pull Latest Images
         run: |
-          docker pull ghcr.io/hemanthpeddi/helloapi:v1
+          docker compose pull
 
-      - name: Stop Old Container
+      - name: Deploy Application
         run: |
-          docker stop helloapi || true
-
-      - name: Remove Old Container
-        run: |
-          docker rm helloapi || true
-
-      - name: Start Container
-        run: |
-          docker run -d \
-            --name helloapi \
-            -p 5000:8080 \
-            ghcr.io/hemanthpeddi/helloapi:v1
+          docker compose up -d
