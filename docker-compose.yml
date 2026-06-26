@@ -2,9 +2,23 @@ services:
 
   api:
     image: ghcr.io/hemanthpeddi/helloapi:v1
+    platform: linux/amd64
     container_name: helloapi
 
     ports:
       - "5000:8080"
 
     restart: unless-stopped
+
+  ui:
+    image: ghcr.io/hemanthpeddi/helloui:v1
+    platform: linux/amd64
+    container_name: helloui
+
+    ports:
+      - "4200:80"
+
+    restart: unless-stopped
+
+    depends_on:
+      - api
